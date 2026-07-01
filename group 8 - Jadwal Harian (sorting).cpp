@@ -13,13 +13,9 @@ private:
     };
 
     DataJadwal data[100];
-    int jumlah;
+    int jumlah=0;
 
 public:
-    Jadwal() {
-        jumlah = 0;
-    }
-
     void tambahJadwal() {
         if (jumlah >= 100) {
             cout << "\nData sudah penuh!\n";
