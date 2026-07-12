@@ -1,350 +1,299 @@
 #include <iostream>
-#include <iomanip>
 #include <string>
 using namespace std;
 
-class Jadwal {
-private:
-    struct DataJadwal {
-        int id;
-        string nama;
-        string tanggal;
-        string jam;
-        string status;
-    };
-
-    DataJadwal data[100];
-    int jumlah = 0;
-
-    int cariIndexById(int id) {
-        for (int i = 0; i < jumlah; i++) {
-            if (data[i].id == id) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    string ubahKeHurufKecil(string teks) {
-        int panjang = teks.length();
-
-        for (int i = 0; i < panjang; i++) {
-            if (teks[i] >= 'A' && teks[i] <= 'Z') {
-                teks[i] = teks[i] + 32;
-            }
-        }
-
-        return teks;
-    }
-
-    void tampilSatuJadwal(int index) {
-        cout << "\n=========================== DATA JADWAL DITEMUKAN =========================\n";
-        cout << left
-             << setw(8) << "ID"
-             << setw(25) << "Nama Kegiatan"
-             << setw(15) << "Tanggal"
-             << setw(10) << "Jam"
-             << setw(18) << "Status" << endl;
-        cout << "--------------------------------------------------------------------------\n";
-        cout << left
-             << setw(8) << data[index].id
-             << setw(25) << data[index].nama
-             << setw(15) << data[index].tanggal
-             << setw(10) << data[index].jam
-             << setw(18) << data[index].status << endl;
-    }
-
-public:
-    void tambahJadwal() {
-        if (jumlah >= 100) {
-            cout << "\nData sudah penuh!\n";
-            return;
-        }
-
-        cout << "\n===== TAMBAH JADWAL =====\n";
-
-        cout << "ID Jadwal      : ";
-        cin >> data[jumlah].id;
-        cin.ignore();
-
-        cout << "Nama Kegiatan  : ";
-        getline(cin, data[jumlah].nama);
-
-        cout << "Tanggal (YYYY/MM/DD) : ";
-        getline(cin, data[jumlah].tanggal);
-
-        cout << "Jam (HH:MM)          : ";
-        getline(cin, data[jumlah].jam);
-
-        int pilihStatus;
-        cout << "\nStatus\n";
-        cout << "1. Belum Selesai\n";
-        cout << "2. Selesai\n";
-        cout << "Pilih Status   : ";
-        cin >> pilihStatus;
-
-        if (pilihStatus == 1)
-            data[jumlah].status = "Belum Selesai";
-        else if (pilihStatus == 2)
-            data[jumlah].status = "Selesai";
-        else
-            data[jumlah].status = "Tidak Diketahui";
-
-        jumlah++;
-
-        cout << "\nData berhasil ditambahkan.\n";
-    }
-
-    void tampilJadwal() {
-        if (jumlah == 0) {
-            cout << "\nData masih kosong.\n";
-            return;
-        }
-
-        cout << "\n============================== DAFTAR JADWAL ==============================\n";
-
-        cout << left
-             << setw(8) << "ID"
-             << setw(25) << "Nama Kegiatan"
-             << setw(15) << "Tanggal"
-             << setw(10) << "Jam"
-             << setw(18) << "Status" << endl;
-
-        cout << "--------------------------------------------------------------------------\n";
-
-        for (int i = 0; i < jumlah; i++) {
-            cout << left
-                 << setw(8) << data[i].id
-                 << setw(25) << data[i].nama
-                 << setw(15) << data[i].tanggal
-                 << setw(10) << data[i].jam
-                 << setw(18) << data[i].status << endl;
-        }
-    }
-
-    void urutkanJadwal() {
-        if (jumlah == 0) {
-            cout << "\nData masih kosong.\n";
-            return;
-        }
-
-        for (int i = 0; i < jumlah - 1; i++) {
-            for (int j = 0; j < jumlah - i - 1; j++) {
-
-                bool tukar = false;
-
-                if (data[j].tanggal > data[j + 1].tanggal) {
-                    tukar = true;
-                }
-
-                else if (data[j].tanggal == data[j + 1].tanggal &&
-                         data[j].jam > data[j + 1].jam) {
-                    tukar = true;
-                }
-
-                if (tukar) {
-                    DataJadwal temp = data[j];
-                    data[j] = data[j + 1];
-                    data[j + 1] = temp;
-                }
-            }
-        }
-
-        cout << "\nJadwal berhasil diurutkan berdasarkan tanggal dan jam.\n";
-        tampilJadwal();
-    }
-
-    void cariJadwalLinear() {
-        if (jumlah == 0) {
-            cout << "\nData masih kosong.\n";
-            return;
-        }
-
-        string kataKunci;
-        bool adaData = false;
-
-        cout << "\n===== CARI JADWAL (LINEAR SEARCH) =====\n";
-        cout << "Masukkan kata kunci (ID/Nama/Tanggal/Jam/Status) : ";
-        cin.ignore();
-        getline(cin, kataKunci);
-
-        if (kataKunci == "") {
-            cout << "\nKata kunci tidak boleh kosong.\n";
-            return;
-        }
-
-        kataKunci = ubahKeHurufKecil(kataKunci);
-
-        cout << "\n=========================== HASIL PENCARIAN ===============================\n";
-        cout << left
-             << setw(8) << "ID"
-             << setw(25) << "Nama Kegiatan"
-             << setw(15) << "Tanggal"
-             << setw(10) << "Jam"
-             << setw(18) << "Status" << endl;
-        cout << "--------------------------------------------------------------------------\n";
-
-        for (int i = 0; i < jumlah; i++) {
-            string id = to_string(data[i].id);
-            string nama = ubahKeHurufKecil(data[i].nama);
-            string tanggal = ubahKeHurufKecil(data[i].tanggal);
-            string jam = ubahKeHurufKecil(data[i].jam);
-            string status = ubahKeHurufKecil(data[i].status);
-
-            bool cocok = false;
-
-            if (id.find(kataKunci) != string::npos)
-                cocok = true;
-            else if (nama.find(kataKunci) != string::npos)
-                cocok = true;
-            else if (tanggal.find(kataKunci) != string::npos)
-                cocok = true;
-            else if (jam.find(kataKunci) != string::npos)
-                cocok = true;
-            else if (kataKunci == "selesai" && status == "selesai")
-                cocok = true;
-            else if (kataKunci != "selesai" && status.find(kataKunci) != string::npos)
-                cocok = true;
-
-            if (cocok) {
-                cout << left
-                     << setw(8) << data[i].id
-                     << setw(25) << data[i].nama
-                     << setw(15) << data[i].tanggal
-                     << setw(10) << data[i].jam
-                     << setw(18) << data[i].status << endl;
-                adaData = true;
-            }
-        }
-
-        if (!adaData) {
-            cout << "\nData jadwal tidak ditemukan.\n";
-        }
-    }
-
-    void updateStatus() {
-        if (jumlah == 0) {
-            cout << "\nData masih kosong.\n";
-            return;
-        }
-
-        int id;
-        cout << "\nMasukkan ID Jadwal : ";
-        cin >> id;
-
-        int ditemukan = cariIndexById(id);
-
-        if (ditemukan == -1) {
-            cout << "\nID Jadwal tidak ditemukan.\n";
-            return;
-        }
-
-        int pilih;
-
-        cout << "\nStatus Saat Ini : " << data[ditemukan].status << endl;
-        cout << "1. Belum Selesai\n";
-        cout << "2. Selesai\n";
-        cout << "Pilih Status Baru : ";
-        cin >> pilih;
-
-        if (pilih == 1)
-            data[ditemukan].status = "Belum Selesai";
-        else if (pilih == 2)
-            data[ditemukan].status = "Selesai";
-        else {
-            cout << "\nPilihan tidak valid.\n";
-            return;
-        }
-
-        cout << "\nStatus berhasil diperbarui.\n";
-        tampilSatuJadwal(ditemukan);
-    }
-
-    void hapusJadwal() {
-        if (jumlah == 0) {
-            cout << "\nData masih kosong.\n";
-            return;
-        }
-
-        int id;
-        cout << "\nMasukkan ID Jadwal yang akan dihapus : ";
-        cin >> id;
-
-        int ditemukan = cariIndexById(id);
-
-        if (ditemukan == -1) {
-            cout << "\nID Jadwal tidak ditemukan.\n";
-            return;
-        }
-
-        for (int i = ditemukan; i < jumlah - 1; i++) {
-            data[i] = data[i + 1];
-        }
-
-        jumlah--;
-
-        cout << "\nData berhasil dihapus.\n";
-        cout << "\nSilakan pilih menu 2 (Tampilkan Jadwal) untuk melihat data terbaru.\n";
-    }
+struct DataJadwal {
+    int id;
+    string nama;
+    string tanggal;
+    string jam;
+    string status;
 };
 
-int main() {
-    Jadwal j;
+DataJadwal data[100];
+int jumlah = 0;
 
-    int pilihan;
+void tampilData(string judul, int awal, int akhir) {
+    cout << judul;
+    cout << "ID      Nama Kegiatan           Tanggal        Jam       Status            \n";
+    cout << "--------------------------------------------------------------------------\n";
 
-        do {
+    for (int i = awal; i <= akhir; i++) {
+        cout << data[i].id;
 
-            cout << "\n=====================================\n";
-            cout << "  SISTEM JADWAL KEGIATAN HARIAN\n";
-            cout << "=====================================\n";
-            cout << "1. Tambah Jadwal\n";
-            cout << "2. Tampilkan Jadwal\n";
-            cout << "3. Urutkan Jadwal\n";
-            cout << "4. Cari Jadwal (Linear Search)\n";
-            cout << "5. Perbarui Status Jadwal\n";
-            cout << "6. Hapus Jadwal\n";
-            cout << "7. Keluar\n";
-            cout << "=====================================\n";
-            cout << "Masukkan Pilihan : ";
-            cin >> pilihan;
+        int angka = data[i].id;
+        int digit = 1;
+        while (angka >= 10) {
+            digit++;
+            angka = angka / 10;
+        }
 
-            switch (pilihan) {
+        for (int s = 0; s < 8 - digit; s++)
+            cout << " ";
 
-            case 1:
-                j.tambahJadwal();
-                break;
+        cout << data[i].nama;
+        for (int s = 0; s < 25 - (int)data[i].nama.length(); s++)
+            cout << " ";
 
-            case 2:
-                j.tampilJadwal();
-                break;
+        cout << data[i].tanggal;
+        for (int s = 0; s < 15 - (int)data[i].tanggal.length(); s++)
+            cout << " ";
 
-            case 3:
-                j.urutkanJadwal();
-                break;
+        cout << data[i].jam;
+        for (int s = 0; s < 10 - (int)data[i].jam.length(); s++)
+            cout << " ";
 
-            case 4:
-                j.cariJadwalLinear();
-                break;
+        cout << data[i].status;
+        for (int s = 0; s < 18 - (int)data[i].status.length(); s++)
+            cout << " ";
 
-            case 5:
-                j.updateStatus();
-                break;
+        cout << endl;
+    }
+}
 
-            case 6:
-                j.hapusJadwal();
-                break;
+void bubbleSort(int mode) {
+    for (int i = 0; i < jumlah - 1; i++) {
+        for (int j = 0; j < jumlah - i - 1; j++) {
+            bool tukar = false;
 
-            case 7:
-                cout << "\nTerima kasih telah menggunakan program.\n";
-                break;
-
-            default:
-                cout << "\nPilihan tidak valid!\n";
+            if (mode == 1) {
+                if (data[j].tanggal > data[j + 1].tanggal ||
+                    (data[j].tanggal == data[j + 1].tanggal && data[j].jam > data[j + 1].jam)) {
+                    tukar = true;
+                }
+            } else if (mode == 2) {
+                if (data[j].id > data[j + 1].id) {
+                    tukar = true;
+                }
             }
 
-        } while (pilihan != 7);
+            if (tukar) {
+                DataJadwal temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int binarySearch(int id) {
+    bubbleSort(2);
+
+    int kiri = 0;
+    int kanan = jumlah - 1;
+
+    while (kiri <= kanan) {
+        int tengah = (kiri + kanan) / 2;
+
+        if (data[tengah].id == id) {
+            return tengah;
+        } else if (id < data[tengah].id) {
+            kanan = tengah - 1;
+        } else {
+            kiri = tengah + 1;
+        }
+    }
+
+    return -1;
+}
+
+void tampilMenu() {
+    cout << "\n=====================================\n";
+    cout << "  SISTEM JADWAL KEGIATAN HARIAN\n";
+    cout << "=====================================\n";
+    cout << "1. Tambah Jadwal\n";
+    cout << "2. Tampilkan Jadwal\n";
+    cout << "3. Urutkan Jadwal\n";
+    cout << "4. Cari Jadwal (Binary Search)\n";
+    cout << "5. Perbarui Status Jadwal\n";
+    cout << "6. Hapus Jadwal\n";
+    cout << "7. Keluar\n";
+    cout << "=====================================\n";
+    cout << "Masukkan Pilihan : ";
+}
+
+void tambahJadwal() {
+    if (jumlah >= 100) {
+        cout << "\nData sudah penuh!\n";
+        return;
+    }
+
+    cout << "\n===== TAMBAH JADWAL =====\n";
+    cout << "ID Jadwal      : ";
+    cin >> data[jumlah].id;
+    cin.ignore();
+
+    cout << "Nama Kegiatan  : ";
+    getline(cin, data[jumlah].nama);
+
+    cout << "Tanggal (YYYY/MM/DD) : ";
+    getline(cin, data[jumlah].tanggal);
+
+    cout << "Jam (HH:MM)          : ";
+    getline(cin, data[jumlah].jam);
+
+    int pilihStatus;
+    cout << "\nStatus\n";
+    cout << "1. Belum Selesai\n";
+    cout << "2. Selesai\n";
+    cout << "Pilih Status   : ";
+    cin >> pilihStatus;
+
+    if (pilihStatus == 1)
+        data[jumlah].status = "Belum Selesai";
+    else if (pilihStatus == 2)
+        data[jumlah].status = "Selesai";
+    else
+        data[jumlah].status = "Tidak Diketahui";
+
+    jumlah++;
+    cout << "\nData berhasil ditambahkan.\n";
+}
+
+void tampilJadwal() {
+    if (jumlah == 0) {
+        cout << "\nData masih kosong.\n";
+        return;
+    }
+
+    tampilData("\n============================== DAFTAR JADWAL ==============================\n", 0, jumlah - 1);
+}
+
+void urutkanJadwal() {
+    if (jumlah == 0) {
+        cout << "\nData masih kosong.\n";
+        return;
+    }
+
+    bubbleSort(1);
+    cout << "\nJadwal berhasil diurutkan berdasarkan tanggal dan jam.\n";
+    tampilData("\n============================== DAFTAR JADWAL ==============================\n", 0, jumlah - 1);
+}
+
+void cariJadwal() {
+    if (jumlah == 0) {
+        cout << "\nData masih kosong.\n";
+        return;
+    }
+
+    int idCari;
+    cout << "\n===== CARI JADWAL (BINARY SEARCH) =====\n";
+    cout << "Masukkan ID Jadwal : ";
+    cin >> idCari;
+
+    int ditemukan = binarySearch(idCari);
+
+    if (ditemukan == -1) {
+        cout << "\nData jadwal tidak ditemukan.\n";
+        return;
+    }
+
+    tampilData("\n=========================== DATA JADWAL DITEMUKAN =========================\n", ditemukan, ditemukan);
+}
+
+void updateStatus() {
+    if (jumlah == 0) {
+        cout << "\nData masih kosong.\n";
+        return;
+    }
+
+    int idUpdate;
+    cout << "\nMasukkan ID Jadwal : ";
+    cin >> idUpdate;
+
+    int ditemukan = binarySearch(idUpdate);
+
+    if (ditemukan == -1) {
+        cout << "\nID Jadwal tidak ditemukan.\n";
+        return;
+    }
+
+    int pilih;
+    cout << "\nStatus Saat Ini : " << data[ditemukan].status << endl;
+    cout << "1. Belum Selesai\n";
+    cout << "2. Selesai\n";
+    cout << "Pilih Status Baru : ";
+    cin >> pilih;
+
+    if (pilih == 1)
+        data[ditemukan].status = "Belum Selesai";
+    else if (pilih == 2)
+        data[ditemukan].status = "Selesai";
+    else {
+        cout << "\nPilihan tidak valid.\n";
+        return;
+    }
+
+    cout << "\nStatus berhasil diperbarui.\n";
+    tampilData("\n=========================== DATA JADWAL DITEMUKAN =========================\n", ditemukan, ditemukan);
+}
+
+void hapusJadwal() {
+    if (jumlah == 0) {
+        cout << "\nData masih kosong.\n";
+        return;
+    }
+
+    int idHapus;
+    cout << "\nMasukkan ID Jadwal yang akan dihapus : ";
+    cin >> idHapus;
+
+    int ditemukan = binarySearch(idHapus);
+
+    if (ditemukan == -1) {
+        cout << "\nID Jadwal tidak ditemukan.\n";
+        return;
+    }
+
+    for (int i = ditemukan; i < jumlah - 1; i++) {
+        data[i] = data[i + 1];
+    }
+
+    jumlah--;
+    cout << "\nData berhasil dihapus.\n";
+    cout << "\nSilakan pilih menu 2 (Tampilkan Jadwal) untuk melihat data terbaru.\n";
+}
+
+int main() {
+    int pilihan;
+
+    do {
+        tampilMenu();
+        cin >> pilihan;
+
+        switch (pilihan) {
+        case 1:
+            tambahJadwal();
+            break;
+
+        case 2:
+            tampilJadwal();
+            break;
+
+        case 3:
+            urutkanJadwal();
+            break;
+
+        case 4:
+            cariJadwal();
+            break;
+
+        case 5:
+            updateStatus();
+            break;
+
+        case 6:
+            hapusJadwal();
+            break;
+
+        case 7:
+            cout << "\nTerima kasih telah menggunakan program.\n";
+            break;
+
+        default:
+            cout << "\nPilihan tidak valid!\n";
+        }
+    } while (pilihan != 7);
 
     return 0;
 }
